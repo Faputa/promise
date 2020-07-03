@@ -1,0 +1,12 @@
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "my promise impl",
+  "repository": "https://github.com/fpure/promise",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "fpure",
+  "license": "MIT"
+}
