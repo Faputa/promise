@@ -57,7 +57,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   if (this.status === REJECTED) {
     // 标记存在失败回调
     // 如果在Promise立即失败后立即设置失败回调将不会打印错误信息
-    this.onRejectedCallbacks.length === 0 && this.onRejectedCallbacks.push('marker')
+    this.onRejectedCallbacks.length === 0 && this.onRejectedCallbacks.push(() => { })
     return new Promise((resolve, reject) => {
       try {
         let x = onRejected(this.reason)
