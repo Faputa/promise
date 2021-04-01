@@ -1,5 +1,5 @@
-const Promise = require(".")
+import Promise from './index.js'
 
-new Promise(resolve => setTimeout(() => resolve(100), 1000))
-  .then(value => console.log(value))
-  .then(value => console.log(value))
+const p = new Promise(resolve => setTimeout(() => resolve(100), 1000))
+p.then(value => console.log(value))
+p.then(value => console.log(value))

@@ -113,4 +113,4 @@ Promise.reject = function (reason) {
   return new Promise((_, reject) => reject(reason))
 }
 
-module.exports = Promise;
+export default Promise;

@@ -2,11 +2,13 @@
   "name": "promise",
   "version": "1.0.0",
   "description": "my promise impl",
-  "repository": "https://github.com/fpure/promise",
+  "repository": "https://github.com/refcell/promise",
+  "type": "module",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "node test"
   },
-  "author": "fpure",
+  "author": "refcell",
   "license": "MIT"
 }
