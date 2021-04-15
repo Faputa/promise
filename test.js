@@ -1,6 +1,5 @@
-import Promise from './index.js'
+const Promise = require('./index')
 
-new Promise(resolve => setTimeout(() => resolve(100), 1000))
-  .then(value => console.log(value))
-  .catch(reason => console.log(reason))
-
+new Promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
+  .then(function (value) { console.log(value) })
+  .catch(function (reason) { console.log(reason) })

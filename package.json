@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "my promise impl",
   "repository": "https://github.com/refcell/promise",
-  "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {

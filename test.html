@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <script src='index.js'></script>
+</head>
+
+<body>
+  <script>
+    function test() {
+      new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
+        .then(function (value) { console.log(value) })
+        .catch(function (reason) { console.log(reason) })
+    }
+    function test2() {
+      const p = new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
+      p.then(function (value) { console.log(value) })
+      p.then(function (value) { console.log(value) })
+    }
+    function test3() {
+      promise.all([
+        new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1001) }),
+        new promise(function (resolve) { setTimeout(function () { resolve(200) }, 1002) }),
+        new promise(function (resolve) { setTimeout(function () { resolve(300) }, 1003) })
+      ]).then(function (values) {
+        console.log(values)
+      })
+    }
+  </script>
+</body>
+
+</html>
