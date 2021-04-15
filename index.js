@@ -27,7 +27,7 @@
       // 放到setTimeout中执行是为了让Promise在立即失败之后和立即设置失败回调之前不会打印错误信息
       setTimeout(function () {
         if (this.onRejectedCallbacks.length === 0) {
-          console.error(reason)
+          console.error('Uncaught (in promise)', reason)
         }
       }.bind(this))
     }
@@ -59,7 +59,9 @@
     if (this.status === REJECTED) {
       // 标记存在失败回调
       // 如果在Promise立即失败后立即设置失败回调将不会打印错误信息
-      this.onRejectedCallbacks.length === 0 && this.onRejectedCallbacks.push(function () { })
+      if (this.onRejectedCallbacks.length === 0) {
+        this.onRejectedCallbacks.push(function () { })
+      }
 
       return new Promise(function (resolve, reject) {
         try {
