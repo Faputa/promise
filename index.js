@@ -5,6 +5,8 @@
   const FULFILLED = 'fulfilled'
   const REJECTED = 'rejected'
 
+  global.queueMicrotask = global.queueMicrotask || global.setImmediate
+
   function Promise(executor) {
     this.status = PENDING
     this.value = undefined
@@ -13,30 +15,29 @@
     this.onRejectedCallbacks = []
 
     function resolve(value) {
-      this.status = FULFILLED
-      this.value = value
-      this.onFulfilledCallbacks.forEach(function (callback) { callback() })
-    }
-
-    function reject(reason) {
-      this.status = REJECTED
-      this.reason = reason
-      this.onRejectedCallbacks.forEach(function (callback) { callback() })
-
-      // 如果失败之后没有设置失败回调则打印错误信息
-      // 放到setTimeout中执行是为了让Promise在立即失败之后和立即设置失败回调之前不会打印错误信息
-      setTimeout(function () {
-        if (this.onRejectedCallbacks.length === 0) {
-          console.error('Uncaught (in promise)', reason)
-        }
+      queueMicrotask(function () {
+        this.status = FULFILLED
+        this.value = value
+        this.onFulfilledCallbacks.forEach(function (callback) { callback() })
       }.bind(this))
     }
 
-    try {
-      executor(resolve.bind(this), reject.bind(this))
-    } catch (e) {
-      reject(e)
+    function reject(reason) {
+      queueMicrotask(function () {
+        this.status = REJECTED
+        this.reason = reason
+        if (this.onRejectedCallbacks.length === 0) { throw reason }
+        this.onRejectedCallbacks.forEach(function (callback) { callback() })
+      }.bind(this))
     }
+
+    queueMicrotask(function () {
+      try {
+        executor(resolve.bind(this), reject.bind(this))
+      } catch (e) {
+        reject(e)
+      }
+    }.bind(this))
   }
 
   Promise.prototype.then = function (onFulfilled, onRejected) {
@@ -57,12 +58,6 @@
       }.bind(this))
     }
     if (this.status === REJECTED) {
-      // 标记存在失败回调
-      // 如果在Promise立即失败后立即设置失败回调将不会打印错误信息
-      if (this.onRejectedCallbacks.length === 0) {
-        this.onRejectedCallbacks.push(function () { })
-      }
-
       return new Promise(function (resolve, reject) {
         try {
           let x = onRejected(this.reason)
@@ -125,7 +120,7 @@
       iterable.forEach(function (p, i) {
         p.then(function (value) {
           values[i] = value
-          if (++count == iterable.length) {
+          if (++count === iterable.length) {
             resolve(values)
           }
         }).catch(function (reason) {

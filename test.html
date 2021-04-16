@@ -12,20 +12,20 @@
 <body>
   <script>
     function test() {
-      new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
+      new Promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
         .then(function (value) { console.log(value) })
         .catch(function (reason) { console.log(reason) })
     }
     function test2() {
-      const p = new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
+      const p = new Promise(function (resolve) { setTimeout(function () { resolve(100) }, 1000) })
       p.then(function (value) { console.log(value) })
       p.then(function (value) { console.log(value) })
     }
     function test3() {
-      promise.all([
-        new promise(function (resolve) { setTimeout(function () { resolve(100) }, 1001) }),
-        new promise(function (resolve) { setTimeout(function () { resolve(200) }, 1002) }),
-        new promise(function (resolve) { setTimeout(function () { resolve(300) }, 1003) })
+      Promise.all([
+        new Promise(function (resolve) { setTimeout(function () { resolve(100) }, 1001) }),
+        new Promise(function (resolve) { setTimeout(function () { resolve(200) }, 1002) }),
+        new Promise(function (resolve) { setTimeout(function () { resolve(300) }, 1003) })
       ]).then(function (values) {
         console.log(values)
       })
