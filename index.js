@@ -31,13 +31,11 @@
       }.bind(this))
     }
 
-    queueMicrotask(function () {
-      try {
-        executor(resolve.bind(this), reject.bind(this))
-      } catch (e) {
-        reject(e)
-      }
-    }.bind(this))
+    try {
+      executor(resolve.bind(this), reject.bind(this))
+    } catch (e) {
+      reject(e)
+    }
   }
 
   Promise.prototype.then = function (onFulfilled, onRejected) {
@@ -105,6 +103,18 @@
     return this.then(null, onRejected)
   }
 
+  Promise.prototype.finally = function (onFinally) {
+    return this.then(function (value) {
+      return Promise.resolve(onFinally()).then(function () {
+        return value
+      })
+    }, function (err) {
+      return Promise.resolve(onFinally()).then(function () {
+        throw err
+      })
+    })
+  };
+
   Promise.resolve = function (value) {
     return value instanceof Promise ? value : new Promise(function (resolve, _) { return resolve(value) })
   }
@@ -116,15 +126,35 @@
   Promise.all = function (iterable) {
     return new Promise(function (resolve, reject) {
       let values = []
-      let count = 0
+      let fulfilled = 0
+      let rejected = 0
       iterable.forEach(function (p, i) {
         p.then(function (value) {
           values[i] = value
-          if (++count === iterable.length) {
+          if (++fulfilled === iterable.length) {
             resolve(values)
           }
-        }).catch(function (reason) {
-          reject(reason)
+        }, function (reason) {
+          if (++rejected === 1) {
+            reject(reason)
+          }
+        })
+      })
+    })
+  }
+
+  Promise.race = function (iterable) {
+    return new Promise(function (resolve, reject) {
+      let count = 0
+      iterable.forEach(function (p) {
+        p.then(function (value) {
+          if (++count === 1) {
+            resolve(value)
+          }
+        }, function (reason) {
+          if (++count === 1) {
+            reject(reason)
+          }
         })
       })
     })

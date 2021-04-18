@@ -35,6 +35,16 @@ export class Promise<R> implements Thenable<R> {
   catch<U>(onRejected?: (error: any) => U | Thenable<U>): Promise<U>;
 
   /**
+   * onSettled is invoked when/if the "promise" settles (either rejects or fulfills).
+   * The returned promise is settled when the `Thenable` returned by `onFinally` settles;
+   * it is rejected if `onFinally` throws or rejects; otherwise it assumes the state of the
+   * original Promise.
+   *
+   * @param onFinally called when/if "promise" settles
+   */
+  finally(onFinally?: () => any | Thenable<any>): Promise<R>;
+
+  /**
    * Make a new promise from the thenable.
    * A thenable is promise-like in as far as it has a "then" method.
    */
@@ -62,4 +72,9 @@ export class Promise<R> implements Thenable<R> {
   static all<T1, T2>(values: [T1 | Thenable<T1>, T2 | Thenable<T2>]): Promise<[T1, T2]>;
   static all<T1>(values: [T1 | Thenable<T1>]): Promise<[T1]>;
   static all<TAll>(values: Array<TAll | Thenable<TAll>>): Promise<TAll[]>;
+
+  /**
+   * Make a Promise that fulfills when any item fulfills, and rejects if any item rejects.
+   */
+  static race<R>(promises: (R | Thenable<R>)[]): Promise<R>;
 }
